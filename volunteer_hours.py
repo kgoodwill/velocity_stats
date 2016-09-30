@@ -11,6 +11,8 @@ volunteers = {}
 total_hours = 0
 
 def get_stats(line):
+    # Futures will execute this function, use it to generate all stats
+
     # print(line)
     results = {}
     match = re.search(r'([0-9/]+) ([0-9:]+),([A-Za-z ]+),([A-Za-z ]+),([0-9/]+),([0-9\.]+)', line)
@@ -33,7 +35,8 @@ def get_stats(line):
     return results
 
 start = datetime.datetime.now()
-with concurrent.futures.ThreadPoolExecutor() as executor:
+with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+    # Creates a map instead of using map()
     future_to_line = {executor.submit(get_stats, line): line for line in file}
     for future in concurrent.futures.as_completed(future_to_line):
         line = future_to_line[future]
@@ -42,6 +45,7 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
         except Exception as e:
             print('%r generated an exception: %s' % (line, e))
         else:
+            # Do something with the returned data
             if future.done():
                 x = 1
                 # print('---Future Done---')
