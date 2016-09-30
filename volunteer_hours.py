@@ -1,6 +1,7 @@
 import sys
 import re
 import concurrent.futures
+import datetime
 
 """ Trying to make this multi-threaded, multiple files or mulitple threads executing on the same file. Either way the results will be in the same place. """
 
@@ -31,6 +32,7 @@ def get_stats(line):
     }
     return results
 
+start = datetime.datetime.now()
 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
     future_to_line = {executor.submit(get_stats, line): line for line in file}
     for future in concurrent.futures.as_completed(future_to_line):
@@ -41,7 +43,8 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             print('%r generated an exception: %s' % (line, e))
         else:
             print(data)
-
+end = datetime.datetime.now()
+print('Execution time: %d microseconds' % (end - start).microseconds)
     # total_hours += float(hours_volunteered)
 
     # volunteer_name = first_name.lower() + last_name.lower()
