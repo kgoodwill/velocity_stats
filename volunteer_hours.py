@@ -1,11 +1,13 @@
 import sys
 import re
+import datetime
 
 file = open(sys.argv[1], 'r')
 
 volunteers = {}
 total_hours = 0
 
+start = datetime.datetime.now()
 for line in file:
     # print(line)
     match = re.search(r'([0-9/]+) ([0-9:]+),([A-Za-z ]+),([A-Za-z ]+),([0-9/]+),([0-9\.]+)', line)
@@ -30,3 +32,6 @@ for line in file:
 unique_volunteers = len(volunteers.keys())
 print('Number of Unique Volunteers: ' + str(unique_volunteers))
 print('Total Hours for all Volunteers: ' + str(total_hours))
+
+end = datetime.datetime.now()
+print('Execution time: %d microseconds' % (end - start).microseconds)
