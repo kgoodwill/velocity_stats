@@ -11,7 +11,7 @@ volunteers = {}
 total_hours = 0
 
 def get_stats(line):
-    print(line)
+    # print(line)
     results = {}
     match = re.search(r'([0-9/]+) ([0-9:]+),([A-Za-z ]+),([A-Za-z ]+),([0-9/]+),([0-9\.]+)', line)
     # If it doesn't match the regex skip it, not worth parsing
@@ -33,7 +33,7 @@ def get_stats(line):
     return results
 
 start = datetime.datetime.now()
-with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+with concurrent.futures.ThreadPoolExecutor() as executor:
     future_to_line = {executor.submit(get_stats, line): line for line in file}
     for future in concurrent.futures.as_completed(future_to_line):
         line = future_to_line[future]
@@ -42,7 +42,9 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         except Exception as e:
             print('%r generated an exception: %s' % (line, e))
         else:
-            print(data)
+            if future.done():
+                x = 1
+                # print('---Future Done---')
 end = datetime.datetime.now()
 print('Execution time: %d microseconds' % (end - start).microseconds)
     # total_hours += float(hours_volunteered)
